@@ -1,0 +1,26 @@
+---
+# tasks file for redhatnordicssa.vm_panic_mode
+- name: Ensure firewalld is installed
+  ansible.builtin.yum:
+    name: firewalld 
+    state: present
+- name: Ensure firewalld is running and enabled across reboot
+  ansible.builtin.service:
+    name: firewalld
+    state: started
+    enabled: yes
+- name: Active firewalld panic mode
+  command: firewall-cmd --panic-on
+  async: 60
+  poll: 0
+
+- name: Check so that communications now are down
+  wait_for:
+    port: 22
+    timeout: 3
+    search_regex: OpenSSH
+  vars:
+    ansible_connection: local
+    ansible_become: false
+    ansible_user: "{{ local_check_user }}"
+  ignore_errors: yes
