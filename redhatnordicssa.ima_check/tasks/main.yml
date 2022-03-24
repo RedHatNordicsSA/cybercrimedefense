@@ -1,0 +1,16 @@
+---
+# tasks file for redhatnordicssa.detect_intrusion
+- name: Check if IMA reports any changes to the system
+  ansible.builtin.copy:
+    src: ascii_runtime_measurements
+    dest: /sys/kernel/security/ima/ascii_runtime_measurements
+  check_mode: yes
+  diff: yes
+  register: ima_check
+
+- name: Assert that no changes where detected on the system
+  assert:
+    that: ima_check.stdout is not defined
+    fail_msg: "IMA reports previously listed changes on the system."
+    success_msg: "IMA reports no detected changes on the system."
+

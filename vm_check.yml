@@ -1,0 +1,7 @@
+- name: Validate system integrity using IMA
+  hosts: all
+  gather_facts: no
+  tasks:
+    - name: Include ima_check
+      include_role:
+        name: redhatnordicssa.ima_check
