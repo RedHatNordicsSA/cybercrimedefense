@@ -1,0 +1,3 @@
+---
+# defaults file for redhatnordicssa.vm_panic_mode
+local_check_user: awx

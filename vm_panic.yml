@@ -1,0 +1,9 @@
+- name: Put VM into panic mode
+  hosts: all
+  gather_facts: no
+  vars:
+    local_check_user: mglantz
+  tasks:
+    - name: Include vm_panic_mode
+      include_role:
+        name: redhatnordicssa.vm_panic_mode
