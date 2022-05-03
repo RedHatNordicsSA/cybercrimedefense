@@ -1,9 +1,17 @@
 ---
 # tasks file for redhatnordicssa.yum_gpgcheck
 - name: Find yum repository files
-  command: find /etc/yum.repos.d
+  ansible.builtin.command: find /etc/yum.repos.d -type f
   register: repo_files
 
-- name: Print
+- name: Print list of repo files we will manage
   debug:
     msg: "{{ repo_files }}"
+    verbosity: 2
+
+- name: "Ensure gpg_check is true on all found repositories"
+  ansible.builtin.lineinfile:
+    path: "{{ item }}"
+    regexp: '^gpgheck'
+    line: 'gpgcheck: 1'
+  with_items: "{{ repo_files.stdout }}"
