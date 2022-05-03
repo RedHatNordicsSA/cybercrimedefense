@@ -1,0 +1,9 @@
+---
+# tasks file for redhatnordicssa.yum_gpgcheck
+- name: Find yum repository files
+  command: find /etc/yum.repos.d
+  register: repo_files
+
+- name: Print
+  debug:
+    msg: "{{ repo_files }}"
