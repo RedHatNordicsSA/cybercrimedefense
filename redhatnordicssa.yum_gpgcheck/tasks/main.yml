@@ -6,12 +6,23 @@
 
 - name: Print list of repo files we will manage
   debug:
-    msg: "{{ repo_files }}"
+    msg: "{{ repo_files.stdout }}"
     verbosity: 2
 
-- name: "Ensure gpg_check is true on all found repositories"
-  ansible.builtin.lineinfile:
+- name: "Ensure gpgcheck is enabled on all found repositories"
+  ansible.builtin.replace:
     path: "{{ item }}"
-    regexp: '^gpgheck'
-    line: 'gpgcheck: 1'
-  with_items: "{{ repo_files.stdout }}"
+    regexp: '(.*)gpgcheck.*'
+    replace: 'gpgcheck = 1'
+  with_items: "{{ repo_files.stdout_lines }}"
+
+- name: "Ensure gpgcheck defaults to true"
+  ansible.builtin.replace:
+    path: /etc/yum.conf
+    regexp: '(.*)gpgcheck.*'
+    replace: 'gpgcheck=1'
+
+- name: "Enable gpgcheck by default if missing"
+  ansible.builtin.lineinfile:
+    path: /etc/yum.conf
+    line: 'gpgcheck=1'
