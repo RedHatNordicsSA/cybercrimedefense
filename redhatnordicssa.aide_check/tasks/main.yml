@@ -1,0 +1,13 @@
+---
+# tasks file for redhatnordicssa.aide_check
+- name: Run Advanced Intrusion Detection Environment check
+  ansible.builtin.shell: aide --check
+  become: true
+  register: aide_result
+
+- name: Assert that no changes where detected on the system
+  assert:
+    that: "'AIDE found NO differences' in aide_result.stdout"
+    fail_msg: "AIDE detected a difference betweeen filesystem and database."
+    success_msg: "AIDE found no difference between filesystem and database."
+
